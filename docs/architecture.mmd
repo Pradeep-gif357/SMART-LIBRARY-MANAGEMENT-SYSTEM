@@ -1,0 +1,22 @@
+flowchart LR
+    subgraph Browser
+      UI["Next.js pages (React)<br/>Catalogue, Book detail, My Library,<br/>AI Assistant, Admin dashboard"]
+    end
+    subgraph Server["Next.js server (Route Handlers /api/*)"]
+      AUTH["Auth: bcrypt + signed JWT in httpOnly cookie<br/>role check: student / librarian"]
+      LOGIC["Business logic<br/>recommend.js, assistant.js, embedding.js"]
+    end
+    subgraph DB["PostgreSQL 16 + pgvector (Docker)"]
+      REL[("Relational tables<br/>users, books, borrowings,<br/>reservations, ...")]
+      VEC[("books.embedding vector(256)<br/>HNSW cosine index")]
+      FTS[("books.search_tsv<br/>GIN full-text index")]
+      TRG["Triggers, functions, views,<br/>CHECK / FK / UNIQUE constraints"]
+    end
+    LLM["Claude API (optional)<br/>only rewrites answer text"]
+    UI -- "fetch JSON" --> AUTH
+    AUTH --> LOGIC
+    LOGIC -- "SQL via pg pool (DATABASE_URL from .env)" --> REL
+    LOGIC --> VEC
+    LOGIC --> FTS
+    REL --- TRG
+    LOGIC -. "optional, ANTHROPIC_API_KEY" .-> LLM

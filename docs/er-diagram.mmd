@@ -1,0 +1,70 @@
+erDiagram
+    USERS ||--o{ BORROWINGS : "borrows"
+    USERS ||--o{ RESERVATIONS : "reserves"
+    USERS ||--o{ ACTIVITY_LOG : "generates"
+    BOOKS ||--o{ BORROWINGS : "is lent in"
+    BOOKS ||--o{ RESERVATIONS : "is reserved in"
+    BOOKS ||--o{ ACTIVITY_LOG : "is the target of"
+    CATEGORIES ||--o{ BOOKS : "classifies"
+    BOOKS ||--o{ BOOK_AUTHORS : "has"
+    AUTHORS ||--o{ BOOK_AUTHORS : "writes"
+
+    USERS {
+        int user_id PK
+        varchar name
+        varchar email UK
+        text password_hash
+        varchar role "student | librarian"
+        timestamptz created_at
+    }
+    CATEGORIES {
+        int category_id PK
+        varchar name UK
+    }
+    AUTHORS {
+        int author_id PK
+        varchar name UK
+    }
+    BOOKS {
+        int book_id PK
+        varchar book_code UK
+        varchar title
+        text description
+        varchar publisher
+        int publication_year
+        int category_id FK
+        int total_copies
+        int available_copies
+        vector embedding "vector(256) pgvector"
+        tsvector search_tsv "generated, full-text"
+        timestamptz created_at
+    }
+    BOOK_AUTHORS {
+        int book_id PK,FK
+        int author_id PK,FK
+    }
+    BORROWINGS {
+        int borrowing_id PK
+        int user_id FK
+        int book_id FK
+        timestamptz borrowed_at
+        timestamptz due_date
+        timestamptz returned_at
+        numeric fine_amount
+        varchar status "borrowed | returned"
+    }
+    RESERVATIONS {
+        int reservation_id PK
+        int user_id FK
+        int book_id FK
+        timestamptz reserved_at
+        varchar status "active | ready | fulfilled | cancelled"
+    }
+    ACTIVITY_LOG {
+        bigint activity_id PK
+        int user_id FK
+        int book_id FK
+        varchar action "search | view | borrow | reserve"
+        varchar search_query
+        timestamptz created_at
+    }

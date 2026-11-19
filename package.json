@@ -1,0 +1,31 @@
+{
+  "name": "smart-library",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Smart Library Management and Book Recommendation System (Next.js + PostgreSQL + pgvector)",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
+    "setup": "node scripts/setup.js",
+    "db:setup": "node scripts/setup.js",
+    "test:smoke": "node scripts/smoke-test.js",
+    "test:db": "node scripts/test-db.js",
+    "test": "node scripts/test-db.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
+    "jose": "^5.9.6",
+    "next": "^14.2.15",
+    "pg": "^8.13.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "engines": {
+    "node": ">=18.17"
+  }
+}
